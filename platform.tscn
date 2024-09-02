@@ -16,5 +16,10 @@ texture = ExtResource("1_nic85")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_c32n3")
+one_way_collision = true
+
+[node name="visibilityTimer" type="Timer" parent="."]
+wait_time = 0.1
 
 [connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
+[connection signal="timeout" from="visibilityTimer" to="." method="_on_visibility_timer_timeout"]

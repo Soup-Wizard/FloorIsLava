@@ -3,7 +3,7 @@ extends Area2D
 var direction: Vector2
 
 func _on_body_entered(body):
-	direction = body.last_pos - body.current_pos
+	#direction = body.last_pos - body.current_pos
 	if body.saves > 0:
 		body.saves -= 1
 		#if direction < Vector2(0,0):
@@ -18,10 +18,9 @@ func _on_body_entered(body):
 			#body.velocity.y = 750.0
 		#elif direction.y < 0 && direction.x == 0:
 			#body.velocity.y = -1250
-			
-		if direction.y < 0:
-			body.velocity.y = -1250.0
-		else:
-			body.velocity.y = 750.0
+		
+		body.velocity = Vector2(0,0)
+		body.velocity.y = -1250.0
 	else:
+		body.get_node("CollisionShape2D").queue_free()
 		body.life -= 1
