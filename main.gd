@@ -21,24 +21,28 @@ func saveGame(data):
 	var json_string = JSON.stringify(data)
 	
 	
-	if textContent == null || data.score > textContent.score:
+	if textContent == null || textContent == { } || data.score > textContent.score:
 		res.store_line(json_string)
 		$highScoreLabel.text = "High Score: " + data.name + " - " + str(data.score)
 	
 	$highScoreLabel.visible = true
 
 	return res
+	res.close()
 
 func loadGame():
 	res = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	var textContent = JSON.parse_string(res.get_as_text())
-	if textContent != null:
+	print(textContent)
+	if textContent != { } && textContent != null:
 		$highScoreLabel.text = "High Score: " + textContent.name + " - " + str(textContent.score)
 	else:
 		$highScoreLabel.text = "No High Score Yet"
 	
 	if !$highScoreLabel.visible:
 		$highScoreLabel.visible = true
+	
+	res.close()
 
 const MOVE_SPEED = 3
 const SAVE_PATH = "res://data/highscores.json"
@@ -58,6 +62,7 @@ var score = {
 func startGame():
 	$gameOverLabel.visible = false
 	$highScoreLabel.visible = false
+	$howToPlay.visible = false
 	get_tree().paused = false
 	score.score = 0
 	active_platforms = 0

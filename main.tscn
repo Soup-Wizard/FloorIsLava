@@ -76,10 +76,10 @@ shape = SubResource("RectangleShape2D_iy0mf")
 [node name="scoreLabel" type="Label" parent="."]
 top_level = true
 texture_filter = 1
-offset_left = 13.0
-offset_top = 14.0
-offset_right = 323.0
-offset_bottom = 43.0
+offset_left = 11.0
+offset_top = 10.0
+offset_right = 321.0
+offset_bottom = 39.0
 theme_override_fonts/font = ExtResource("7_viblk")
 theme_override_font_sizes/font_size = 24
 text = "Score: 0"
@@ -87,10 +87,10 @@ text = "Score: 0"
 [node name="savesLabel" type="Label" parent="."]
 top_level = true
 texture_filter = 1
-offset_left = 13.0
-offset_top = 42.0
-offset_right = 323.0
-offset_bottom = 71.0
+offset_left = 11.0
+offset_top = 38.0
+offset_right = 321.0
+offset_bottom = 67.0
 theme_override_fonts/font = ExtResource("7_viblk")
 theme_override_font_sizes/font_size = 24
 text = "Saves: "
@@ -123,6 +123,21 @@ theme_override_font_sizes/font_size = 24
 text = "Game Over
 Press \"Esc\" to try again."
 horizontal_alignment = 1
+
+[node name="howToPlay" type="Label" parent="."]
+process_mode = 2
+top_level = true
+texture_filter = 1
+offset_left = 431.0
+offset_top = 268.0
+offset_right = 741.0
+offset_bottom = 355.0
+theme_override_fonts/font = ExtResource("7_viblk")
+theme_override_font_sizes/font_size = 24
+text = "A / D = Left / Right
+W / Space = Jump
+Left Click = Place Platform"
+horizontal_alignment = 2
 
 [node name="difficultyTimer" type="Timer" parent="."]
 wait_time = 30.0

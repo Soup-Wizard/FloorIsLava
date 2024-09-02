@@ -62,21 +62,3 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_t3d5q")
 autoplay = "default"
 speed_scale = 3.0
-
-[node name="bottomRay1" type="RayCast2D" parent="."]
-position = Vector2(7, 0)
-target_position = Vector2(0, 25)
-
-[node name="bottomRay2" type="RayCast2D" parent="."]
-position = Vector2(-7, 0)
-target_position = Vector2(0, 25)
-
-[node name="topRay1" type="RayCast2D" parent="."]
-position = Vector2(7, 0)
-rotation = 3.14159
-target_position = Vector2(0, 25)
-
-[node name="topRay2" type="RayCast2D" parent="."]
-position = Vector2(-7, 0)
-rotation = 3.14159
-target_position = Vector2(0, 25)
