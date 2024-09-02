@@ -1,13 +1,55 @@
-[gd_scene load_steps=5 format=3 uid="uid://iin1kbbm2lyl"]
+[gd_scene load_steps=12 format=3 uid="uid://iin1kbbm2lyl"]
 
 [ext_resource type="PackedScene" uid="uid://n1et30nlyx1g" path="res://platformer.tscn" id="1_gf21x"]
 [ext_resource type="Script" path="res://main.gd" id="1_pv88m"]
 [ext_resource type="Texture2D" uid="uid://i7vfyvu3utex" path="res://assets/Lava.png" id="1_xe5pw"]
 [ext_resource type="PackedScene" uid="uid://dlqmxvep8k03k" path="res://platform.tscn" id="3_v1osl"]
+[ext_resource type="PackedScene" uid="uid://ccb3c5gt2538w" path="res://spikeball.tscn" id="5_8u0nd"]
+[ext_resource type="PackedScene" uid="uid://6mky16fglh4t" path="res://death.tscn" id="6_m64sg"]
+[ext_resource type="FontFile" uid="uid://5vs6m074dobl" path="res://assets/Tiny5-Regular.ttf" id="7_viblk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jx8da"]
+size = Vector2(20, 493)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h8bk1"]
+size = Vector2(20, 770)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy0mf"]
+size = Vector2(1997, 78)
+
+[sub_resource type="Curve2D" id="Curve2D_3mlq3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 808, 32, 0, 0, 0, 0, 832, 32, 0, 0, 0, 0, 832, 352, 0, 0, 0, 0, 808, 352, 0, 0, 0, 0, 808, 32)
+}
+point_count = 5
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_pv88m")
 platformScene = ExtResource("3_v1osl")
+spikeball = ExtResource("5_8u0nd")
+
+[node name="walls" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls"]
+position = Vector2(0, 247.5)
+shape = SubResource("RectangleShape2D_jx8da")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="walls"]
+position = Vector2(750, 247.5)
+shape = SubResource("RectangleShape2D_jx8da")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="walls"]
+position = Vector2(375, 1)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_h8bk1")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="walls"]
+position = Vector2(375, 484)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_h8bk1")
+
+[node name="spikeball" parent="." instance=ExtResource("5_8u0nd")]
+position = Vector2(375, 263)
 
 [node name="platformer" parent="." instance=ExtResource("1_gf21x")]
 position = Vector2(375, 175)
@@ -15,10 +57,43 @@ position = Vector2(375, 175)
 [node name="platform" parent="." instance=ExtResource("3_v1osl")]
 position = Vector2(375, 204)
 
+[node name="death" parent="." instance=ExtResource("6_m64sg")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="death"]
+position = Vector2(373.5, 405)
+shape = SubResource("RectangleShape2D_iy0mf")
+
+[node name="scoreLabel" type="Label" parent="."]
+texture_filter = 1
+offset_left = 13.0
+offset_top = 14.0
+offset_right = 323.0
+offset_bottom = 43.0
+theme_override_fonts/font = ExtResource("7_viblk")
+theme_override_font_sizes/font_size = 24
+text = "Score: 0"
+
+[node name="savesLabel" type="Label" parent="."]
+texture_filter = 1
+offset_left = 13.0
+offset_top = 42.0
+offset_right = 323.0
+offset_bottom = 71.0
+theme_override_fonts/font = ExtResource("7_viblk")
+theme_override_font_sizes/font_size = 24
+text = "Saves: "
+
+[node name="spawnTimer" type="Timer" parent="."]
+
+[node name="spawnPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_3mlq3")
+
+[node name="spawner" type="PathFollow2D" parent="spawnPath"]
+position = Vector2(808, 32)
+
 [node name="lava" type="Sprite2D" parent="."]
+top_level = true
 position = Vector2(-66, 342)
 texture = ExtResource("1_xe5pw")
 
-[node name="death" type="RayCast2D" parent="."]
-position = Vector2(-337, 369)
-target_position = Vector2(1500, 0)
+[connection signal="timeout" from="spawnTimer" to="." method="_on_spawn_timer_timeout"]
