@@ -14,7 +14,7 @@ var platform2 = {
 	"scene": platformScene
 }
 
-var highScores = []
+var highScores = {}
 
 func saveGame(data):
 	res = FileAccess.open(SAVE_PATH, FileAccess.READ_WRITE)
@@ -22,16 +22,22 @@ func saveGame(data):
 	var textContent = JSON.parse_string(res.get_as_text())
 	#for a in textContent:
 		#highScores.append(a)
-	highScores.append(textContent)
-	highScores.append(score)
+	#if textContent != null:
+		#highScores = textContent
 	var json_string = JSON.stringify(data)
 	print(textContent)
-	print(highScores)
-	print(data)
 	print(json_string)
-	for item in highScores:
-		json_string = JSON.stringify(item)
-		res.store_line(json_string + ",")
+	#print(data)
+	#for item in highScores:
+		#if highScores.size() == 1:
+			#print(item)
+			#print(JSON.stringify(item))+
+	if data.score > textContent.score:
+		res.store_line(json_string)
+		$highScoreLabel.text = "High Score: " + data.name + " - " + str(data.score)
+	else:
+		print("You suck")
+	$highScoreLabel.visible = true
 	#res.store_line(json_string)
 	
 	#for node in save_nodes:
@@ -56,12 +62,15 @@ func saveGame(data):
 	return res
 
 func loadGame():
-	pass
+	res = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var textContent = JSON.parse_string(res.get_as_text())
+	$highScoreLabel.text = "High Score: " + textContent.name + " - " + str(textContent.score)
+	if !$highScoreLabel.visible:
+		$highScoreLabel.visible = true
 
 const MOVE_SPEED = 3
 const SAVE_PATH = "res://data/highscores.json"
 
-var showTime = false
 var res
 var save_nodes
 var playerName
@@ -73,10 +82,11 @@ var score = {
 	"name": "",
 	"score": 0
 	}
-var save_data: SaveData
+#var save_data: SaveData
 
 func startGame():
-	showTime = true
+	$gameOverLabel.visible = false
+	$highScoreLabel.visible = false
 	get_tree().paused = false
 	score.score = 0
 	active_platforms = 0
@@ -88,8 +98,8 @@ func startGame():
 
 func gameOver():
 	score.score = snapped(score.score, 0.1)
-	print("GAME OVER")
 	saveGame(score)
+	$gameOverLabel.visible = true
 
 func makePlatform():
 	for x in platforms:
@@ -145,6 +155,7 @@ func _on_line_edit_text_submitted(new_text):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	loadGame()
 	get_tree().paused = true
 	
 	#save_data = SaveData.load_or_create()
@@ -165,17 +176,16 @@ func _process(delta):
 	moveAndAddLava()
 	$TileMap.position.x -= 0.21
 	
-	if showTime:
-		if Input.is_action_just_pressed("click") && $platformer.life > 0:
-			makePlatform()
+	if Input.is_action_just_pressed("click") && $platformer.life > 0:
+		makePlatform()
 	
-		$savesLabel.text = "Saves: " + str($platformer.saves)
+	$savesLabel.text = "Saves: " + str($platformer.saves)
 	
-		if $platformer.life > 0:
-			score.score += delta*3
-			$scoreLabel.text = "Score: " + str(snapped(score.score, 0.1))
+	if $platformer.life > 0:
+		score.score += delta*3
+		$scoreLabel.text = "Score: " + str(snapped(score.score, 0.1))
 		
-		elif $platformer.life == 0:
-			$platformer.life -= 1
-			gameOver()
-		$platformer.position.x -= MOVE_SPEED
+	elif $platformer.life == 0:
+		$platformer.life -= 1
+		gameOver()
+	$platformer.position.x -= MOVE_SPEED

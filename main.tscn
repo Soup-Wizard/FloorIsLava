@@ -95,6 +95,34 @@ theme_override_fonts/font = ExtResource("7_viblk")
 theme_override_font_sizes/font_size = 24
 text = "Saves: "
 
+[node name="highScoreLabel" type="Label" parent="."]
+process_mode = 2
+visible = false
+top_level = true
+texture_filter = 1
+offset_left = 220.0
+offset_top = 34.0
+offset_right = 530.0
+offset_bottom = 63.0
+theme_override_fonts/font = ExtResource("7_viblk")
+theme_override_font_sizes/font_size = 24
+text = "High Score:"
+horizontal_alignment = 1
+
+[node name="gameOverLabel" type="Label" parent="."]
+process_mode = 2
+visible = false
+top_level = true
+texture_filter = 1
+offset_left = 220.0
+offset_top = 160.0
+offset_right = 530.0
+offset_bottom = 189.0
+theme_override_fonts/font = ExtResource("7_viblk")
+theme_override_font_sizes/font_size = 24
+text = "Press \"Tab\" to try again."
+horizontal_alignment = 1
+
 [node name="difficultyTimer" type="Timer" parent="."]
 wait_time = 30.0
 
