@@ -14,57 +14,29 @@ var platform2 = {
 	"scene": platformScene
 }
 
-var highScores = {}
-
 func saveGame(data):
 	res = FileAccess.open(SAVE_PATH, FileAccess.READ_WRITE)
-	#save_nodes = get_tree().get_nodes_in_group("Persist")
+	
 	var textContent = JSON.parse_string(res.get_as_text())
-	#for a in textContent:
-		#highScores.append(a)
-	#if textContent != null:
-		#highScores = textContent
 	var json_string = JSON.stringify(data)
-	print(textContent)
-	print(json_string)
-	#print(data)
-	#for item in highScores:
-		#if highScores.size() == 1:
-			#print(item)
-			#print(JSON.stringify(item))+
-	if data.score > textContent.score:
+	
+	
+	if textContent == null || data.score > textContent.score:
 		res.store_line(json_string)
 		$highScoreLabel.text = "High Score: " + data.name + " - " + str(data.score)
-	else:
-		print("You suck")
-	$highScoreLabel.visible = true
-	#res.store_line(json_string)
 	
-	#for node in save_nodes:
-		# Check the node is an instanced scene so it can be instanced again during load.
-		#if node.scene_file_path.is_empty():
-			#print("persistent node '%s' is not an instanced scene, skipped" % node.name)
-			#continue
+	$highScoreLabel.visible = true
 
-		# Check the node has a save function.
-		#if !node.has_method("save"):
-			#print("persistent node '%s' is missing a save() function, skipped" % node.name)
-			#continue
-
-		# Call the node's save function.
-		#var node_data = node.call("save")
-
-		# JSON provides a static method to serialized JSON string.
-		#var json_string = JSON.stringify(score)
-
-		# Store the save dictionary as a new line in the save file.
-		#res.store_line(json_string)
 	return res
 
 func loadGame():
 	res = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	var textContent = JSON.parse_string(res.get_as_text())
-	$highScoreLabel.text = "High Score: " + textContent.name + " - " + str(textContent.score)
+	if textContent != null:
+		$highScoreLabel.text = "High Score: " + textContent.name + " - " + str(textContent.score)
+	else:
+		$highScoreLabel.text = "No High Score Yet"
+	
 	if !$highScoreLabel.visible:
 		$highScoreLabel.visible = true
 
@@ -82,7 +54,6 @@ var score = {
 	"name": "",
 	"score": 0
 	}
-#var save_data: SaveData
 
 func startGame():
 	$gameOverLabel.visible = false
@@ -90,7 +61,6 @@ func startGame():
 	get_tree().paused = false
 	score.score = 0
 	active_platforms = 0
-	$platform.queue_redraw()
 	await get_tree().create_timer(1.5).timeout
 	$platform.queue_free()
 	await get_tree().create_timer(1.5).timeout
@@ -142,9 +112,6 @@ func _on_spawn_timer_timeout():
 	ballDirection += randf_range(-PI/4, PI/4)
 	ball.rotation = ballDirection
 	
-	var ballVelocity = Vector2(randf_range(150.0, 250.0), 0.0)
-	#ball.linear_velocity = ballVelocity.rotated(ballDirection)
-	
 	add_child(ball)
 
 func _on_line_edit_text_submitted(new_text):
@@ -158,23 +125,22 @@ func _ready():
 	loadGame()
 	get_tree().paused = true
 	
-	#save_data = SaveData.load_or_create()
 	lastFloorPos = $lava.position
 	for a in 9:
 		lavaFloor.append(lava.duplicate())
 		add_child(lavaFloor[a])
 		lavaFloor[a].position = Vector2(lastFloorPos.x + lava.texture.get_width(),lastFloorPos.y)
 		lastFloorPos = lavaFloor[a].position
-	#startGame()
-	#await get_tree().create_timer(1.5).timeout
-	#$platform.queue_free()
-	#await get_tree().create_timer(5.5).timeout
-	#$spawnTimer.start()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	moveAndAddLava()
 	$TileMap.position.x -= 0.21
+	
+	if Input.is_action_just_pressed("esc"):
+		saveGame(score)
+		get_tree().reload_current_scene()
+		loadGame()
 	
 	if Input.is_action_just_pressed("click") && $platformer.life > 0:
 		makePlatform()
