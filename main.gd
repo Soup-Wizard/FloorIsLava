@@ -18,22 +18,21 @@ func saveGame(data):
 	res = FileAccess.open(SAVE_PATH, FileAccess.READ_WRITE)
 	
 	var textContent = JSON.parse_string(res.get_as_text())
-	var json_string = JSON.stringify(data)
-	
+	var json_string = JSON.stringify(data)	
 	
 	if textContent == null || textContent == { } || data.score > textContent.score:
 		res.store_line(json_string)
 		$highScoreLabel.text = "High Score: " + data.name + " - " + str(data.score)
 	
 	$highScoreLabel.visible = true
-
+	
 	return res
 	res.close()
 
 func loadGame():
 	res = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	var textContent = JSON.parse_string(res.get_as_text())
-	print(textContent)
+	
 	if textContent != { } && textContent != null:
 		$highScoreLabel.text = "High Score: " + textContent.name + " - " + str(textContent.score)
 	else:
@@ -45,7 +44,7 @@ func loadGame():
 	res.close()
 
 const MOVE_SPEED = 3
-const SAVE_PATH = "res://data/highscores.json"
+const SAVE_PATH = "user://highscores.json"
 
 var res
 var save_nodes
@@ -143,9 +142,7 @@ func _process(delta):
 	$TileMap.position.x -= 0.21
 	
 	if Input.is_action_just_pressed("esc"):
-		saveGame(score)
 		get_tree().reload_current_scene()
-		loadGame()
 	
 	if Input.is_action_just_pressed("click") && $platformer.life > 0:
 		makePlatform()
